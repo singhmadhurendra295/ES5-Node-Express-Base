@@ -1,4 +1,5 @@
 import userServices from '../services/user.service';
+import { createJWToken } from '../../lib/auth'
 
 export class Controller {
 
@@ -10,6 +11,26 @@ export class Controller {
       res.send(user);
     }catch(err){
       res.send(err);
+    }
+  }
+
+  async login(req,res){
+    try{
+      let query = {email:req.body.email};
+      let user = await userServices.findUser(query);
+      if(user){
+        user.comparePassword(req.body.password, function(err, isMatch) {
+            if (err) throw err;
+            console.log('Password123:', isMatch); //Password123: true
+        });  
+        let token = createJWToken({
+          sessionData: user,
+          maxAge: 3600
+        });
+        res.send({token:token})
+      }
+    }catch(err){
+
     }
   }
 }

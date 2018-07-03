@@ -1,7 +1,9 @@
 {
-    "presets": ["env"],
-    "ignore": [
-        "node_modules",
-        "public"
+    "presets": [
+      ["env", {
+        "targets": {
+          "node": "current"
+        }
+      }]
     ]
-}
+  }

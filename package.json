@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node index.js",
+    "babel-node": "babel-node --presets=latest",
+    "start": "nodemon --exec npm run babel-node -- ./index.js",
+    "build1": "babel ../NodeBase --ignore node_modules -d dist",
+    "build2": "babel ../NodeBase  --ignore node_modules -d dist --presets env",
+    "serve": "nodemon dist/index.js",
+    "start_local": "nodemon --exec babel-node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,9 +17,11 @@
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-latest": "^6.24.1"
   },
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
     "dotenv": "^6.0.0",
@@ -27,5 +34,10 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "swagger-express-middleware": "^1.0.0-alpha.12"
+  },
+  "babel": {
+    "presets": [
+      "latest"
+    ]
   }
 }

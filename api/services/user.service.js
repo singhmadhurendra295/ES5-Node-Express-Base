@@ -11,7 +11,13 @@ class UserService {
             });
         });
     }
+
+    findUser(query) {
+        DAO.findOne(query);
+    }
   }
+
+
   
   export default new UserService();
   

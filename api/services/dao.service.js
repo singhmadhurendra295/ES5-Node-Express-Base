@@ -12,6 +12,10 @@ class DAOServices{
             }
         });
     }
+
+    findOne(query){
+        Models.users.findOne(query).exec();
+    }
 }
 
 export default new DAOServices();
