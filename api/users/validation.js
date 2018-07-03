@@ -1,6 +1,6 @@
-import Joi from 'joi';
+const Joi = require('joi');
 
-export class UserValidations{
+class UserValidations{
     constructor(){}
 
     create(req,res,next){
@@ -19,6 +19,36 @@ export class UserValidations{
             }
          });        
     }
+
+    login(req,res,next){
+        console.log("interceptor running",req.body);
+        const schema = Joi.object().keys({
+            password: Joi.string().required(),
+            email: Joi.string().email()
+        }); 
+        Joi.validate(req.body, schema, function (err, value) {
+            if(err){
+                res.json({err:err});
+            }else{
+                next();
+            }
+        });        
+    }
+
+    resetPassword(req,res,next){
+        console.log("interceptor running",req.body);
+        const schema = Joi.object().keys({
+            oldPassword: Joi.string().required(),
+            newPassword: Joi.string().required()
+        }); 
+        Joi.validate(req.body, schema, function (err, value) {
+            if(err){
+                res.json({err:err});
+            }else{
+                next();
+            }
+        });        
+    }
 }
 
-export default new UserValidations();
+module.exports = new UserValidations();

@@ -4,12 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "babel-node": "babel-node --presets=latest",
-    "start": "nodemon --exec npm run babel-node -- ./index.js",
-    "build1": "babel ../NodeBase --ignore node_modules -d dist",
-    "build2": "babel ../NodeBase  --ignore node_modules -d dist --presets env",
-    "serve": "nodemon dist/index.js",
-    "start_local": "nodemon --exec babel-node index.js",
+    "start": "node index.js",
+    "nodemon": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,7 +14,8 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-latest": "^6.24.1"
+    "babel-preset-latest": "^6.24.1",
+    "nodemon": "^1.17.5"
   },
   "dependencies": {
     "bcrypt": "^2.0.1",
@@ -29,11 +26,13 @@
     "express-session": "^1.15.6",
     "joi": "^13.4.0",
     "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
     "mongoose": "^5.1.7",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "swagger-express-middleware": "^1.0.0-alpha.12"
+    "swagger-express-middleware": "^1.0.0-alpha.12",
+    "underscore": "^1.9.1"
   },
   "babel": {
     "presets": [

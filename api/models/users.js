@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose =require('mongoose');
 const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
 
@@ -35,5 +35,7 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
         cb(null, isMatch);
     });
 }
+
+UserSchema.set('toObject')
 
 module.exports = mongoose.model('users', UserSchema);

@@ -1,10 +1,10 @@
-import * as express from 'express';
-import controller from './controller';
-import validation from './validation';
-import { verifyJWT_MW } from '../middleware'
+const express = require('express');
+const controller = require('./controller');
+const validation = require('./validation');
+const auth = require('../middleware');
 
-export default express
+module.exports = express
   .Router()
   .post('/register',validation.create, controller.create)
-  .post('/login', controller.login)
-  .get('/:id',verifyJWT_MW, controller.userDetails);
+  .post('/login',validation.login, controller.login)
+  .post('/resetPassword',validation.resetPassword,auth.verifyJWT_MW, controller.resetPassword);

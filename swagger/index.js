@@ -1,7 +1,7 @@
-import middleware from 'swagger-express-middleware';
-import * as path from 'path';
+const middleware = require('swagger-express-middleware');
+const path = require('path');
 
-export default function (app, routes) {
+module.exports = function (app, routes) {
   middleware(path.join(__dirname, 'Api.yaml'), app, (err, mw) => {
     // Enable Express' case-sensitive and strict options
     // (so "/entities", "/Entities", and "/Entities/" are all different)

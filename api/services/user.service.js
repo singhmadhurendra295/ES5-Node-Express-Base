@@ -1,4 +1,4 @@
-import DAO from './dao.service';
+const DAO = require('./dao.service');
 
 class UserService {
     constructor() {}
@@ -12,12 +12,12 @@ class UserService {
         });
     }
 
-    findUser(query) {
-        DAO.findOne(query);
+    findUser(query,projections) {
+        return DAO.findOne(query,projections);
     }
   }
 
 
   
-  export default new UserService();
+module.exports = new UserService();
   

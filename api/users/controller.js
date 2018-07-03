@@ -1,7 +1,7 @@
-import userServices from '../services/user.service';
-import { createJWToken } from '../../lib/auth'
+const userServices = require('../services/user.service');
+const jwtToken = require('../../lib/auth');
 
-export class Controller {
+class Controller {
 
   async create(req, res) {
     console.log(req.body);
@@ -17,21 +17,32 @@ export class Controller {
   async login(req,res){
     try{
       let query = {email:req.body.email};
-      let user = await userServices.findUser(query);
+      let projection = {firstName:1,lastName:1,email:1,password:1}
+      let user = await userServices.findUser(query,projection,{lean:true});      
       if(user){
         user.comparePassword(req.body.password, function(err, isMatch) {
             if (err) throw err;
-            console.log('Password123:', isMatch); //Password123: true
-        });  
-        let token = createJWToken({
-          sessionData: user,
-          maxAge: 3600
+            let {firstName,lastName,email,_id} = user;
+            let token =jwtToken.createJWToken({
+              sessionData: {firstName,lastName,email,_id},
+              maxAge: 3600
+            });
+            res.send({token:token})
         });
-        res.send({token:token})
+       
       }
     }catch(err){
+      res.send(err);
+    }
+  }
 
+  async resetPassword(req,res){
+    console.log("req.user",req.user);
+    if(req.user){
+      res.send({data:req.user});
+    }else{
+      res.send({message:"User not found."});
     }
   }
 }
-export default new Controller();
+module.exports =  new Controller();

@@ -1,18 +1,17 @@
-import Express from 'express';
-import * as path from 'path';
-import * as bodyParser from 'body-parser';
-import * as http from 'http';
-import * as os from 'os';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import mongoose from 'mongoose';
-import swaggerify from '../swagger';
-import routes from './routes';
-
+const Express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const http = require('http');
+const os = require('os');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const mongoose = require('mongoose');
+const swaggerify = require('../swagger');
+const routes = require('./routes');
 
 const app = new Express();
 
-export default class ExpressServer {
+class ExpressServer {
   constructor() {
     mongoose.connect('mongodb://localhost/Factis').then(res => console.log("dn connected"));;
     const root = path.normalize(`${__dirname}/..`);
@@ -41,3 +40,4 @@ export default class ExpressServer {
     return app;
   }
 }
+module.exports = ExpressServer;

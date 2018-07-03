@@ -17,7 +17,7 @@ produces:
 
 
 definitions:
-  ExampleBody:
+  SignupBody:
     type: object
     title: user
     required:
@@ -35,19 +35,52 @@ definitions:
       password:
         type: string
         example: password
+  LoginBody:
+    type: object
+    title: user
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: email
+      password:
+        type: string
+        example: password
+  resetPasswordBody:
+    type: object
+    title: user
+    required:
+      - email
+      - password
+    properties:
+      oldPassword:
+        type: string
+        example: email
+      newPassword:
+        type: string
+        example: password
 
 paths:
   /users/register:
     get:
       tags:
         - Examples
+      parameters:
+        - in: header
+          name: X-Request-ID
+          schema:
+            type: string
+            format: uuid
+      required: true
       description: Fetch all examples
       responses:
         200:
           description: Returns all examples
     post:
       tags:
-        - User
+        - Users
       description: Create a new user
       parameters:
         - name: user
@@ -55,15 +88,15 @@ paths:
           description: an user signup
           required: true
           schema: 
-            $ref: "#/definitions/ExampleBody"
+            $ref: "#/definitions/SignupBody"
       responses:
         200:
           description: Returns all examples
 
-  /examples/{id}:
+  /users/login:
     get:
       tags:
-        - Examples
+        - Users
       parameters:
         - name: id
           in: path
@@ -75,6 +108,42 @@ paths:
           description: Return the example with the specified id
         404:
           description: Example not found
+    post:
+      tags:
+        - Users
+      description: User Login
+      parameters:
+        - name: user
+          in: body
+          description: an user signin
+          required: true
+          schema: 
+            $ref: "#/definitions/LoginBody"
+      responses:
+        200:
+          description: Returns all examples
+
+  /users/resetPassword:
+    post:
+      tags:
+        - Users
+      description: User Reset Passowrd
+      parameters:
+        - name: user
+          in: body
+          description: an user reset password
+          required: true
+          schema: 
+            $ref: "#/definitions/resetPasswordBody"
+        - in: header
+          name: X-Request-ID
+          schema:
+            type: string
+            format: uuid
+      required: true
+      responses:
+        200:
+          description: Returns all examples
 
   /spec:
     get:

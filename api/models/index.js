@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+const fs =require('fs');
 
 // initializes all models and sources them as .model-name
 fs.readdirSync(__dirname).forEach(function(file) {

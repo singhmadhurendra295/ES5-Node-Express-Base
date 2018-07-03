@@ -1,5 +1,5 @@
-import userRouter from '../api/users/router'
+const userRouter = require('../api/users/router');
 
-export default function routes(app) {
+module.exports = function routes(app) {
   app.use('/api/users', userRouter);
 }

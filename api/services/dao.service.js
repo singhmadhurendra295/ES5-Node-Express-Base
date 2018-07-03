@@ -1,4 +1,4 @@
-import Models from '../models';
+const Models = require('../models');
 
 class DAOServices{
     constructor(){}
@@ -13,9 +13,9 @@ class DAOServices{
         });
     }
 
-    findOne(query){
-        Models.users.findOne(query).exec();
+    findOne(query,projections){
+        return Models.users.findOne(query,projections).exec();
     }
 }
 
-export default new DAOServices();
+module.exports = new DAOServices();
