@@ -3,17 +3,28 @@ info:
   version: 1.0.0
   title: NodeBase
   description: BaseProject
+
+securityDefinitions:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+
 basePath: /api/
 tags:
+  - name: Users
+    description: The swagger API specification
   - name: Examples
     description: Simple example endpoints
   - name: Specification
-    description: The swagger API specification
+    description: The swagger API specification  
+
 
 consumes:
   - application/json
 produces:
   - application/json
+  
 
 
 definitions:
@@ -67,12 +78,6 @@ paths:
     get:
       tags:
         - Examples
-      parameters:
-        - in: header
-          name: X-Request-ID
-          schema:
-            type: string
-            format: uuid
       required: true
       description: Fetch all examples
       responses:
@@ -92,7 +97,6 @@ paths:
       responses:
         200:
           description: Returns all examples
-
   /users/login:
     get:
       tags:
@@ -122,29 +126,22 @@ paths:
       responses:
         200:
           description: Returns all examples
-
   /users/resetPassword:
     post:
       tags:
         - Users
-      description: User Reset Passowrd
+      description: User Reset Passowrd      
       parameters:
         - name: user
           in: body
           description: an user reset password
           required: true
           schema: 
-            $ref: "#/definitions/resetPasswordBody"
-        - in: header
-          name: X-Request-ID
-          schema:
-            type: string
-            format: uuid
+            $ref: "#/definitions/resetPasswordBody"        
       required: true
       responses:
         200:
           description: Returns all examples
-
   /spec:
     get:
       tags:
