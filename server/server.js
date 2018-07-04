@@ -2,6 +2,7 @@ const Express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const http = require('http');
+const helmet = require('helmet');
 const os = require('os');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -25,6 +26,12 @@ class ExpressServer {
       resave: true,
       saveUninitialized: true}));
     //require('./passport')(app);
+    app.use(function(req, res, next) {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+    });
+    app.use(helmet());
     routes(app);
     app.use(Express.static(`${root}/public`));
   }

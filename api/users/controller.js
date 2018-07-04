@@ -1,5 +1,7 @@
 const userServices = require('../services/user.service');
 const jwtToken = require('../../lib/auth');
+const {CONSTANTS} = require('../../lib/constant');
+const {SUCCESS_MESSAGE,ERROR_MESSAGE} = require('../../lib/message');
 
 class Controller {
 
@@ -28,8 +30,9 @@ class Controller {
               maxAge: 3600
             });
             res.send({token:token})
-        });
-       
+        });       
+      }else {
+        res.send({ message: ERROR_MESSAGE.INVALID_EMAIL});
       }
     }catch(err){
       res.send(err);
