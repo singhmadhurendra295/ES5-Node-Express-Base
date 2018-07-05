@@ -6,12 +6,10 @@ class DAOServices{
     }
 
     create(document,cb){
-        this.model.create(document,(err,user)=>{
-            if(err){
-                cb(err);
-            }else{
-                cb(null,user);
-            }
+        this.model.create(document).then((user)=>{
+            cb(null,user);
+        }).catch((err) =>{
+            cb(err);
         });
     }
 
@@ -19,8 +17,8 @@ class DAOServices{
         return this.model.findOne(query,projections).exec();
     }
 
-    updateOne(model,query,updateObj,options){
-        return this.model.findOneAndUpdate(query,updateObj,options).exec();
+    updateOne(query,updateObj,options){
+        return this.model.update(query,updateObj,options).exec();
     }
 }
 module.exports = DAOServices;

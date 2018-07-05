@@ -4,7 +4,7 @@ const Models = require('../models');
 class UserService {
     constructor() {}
   
-    create(document) {
+    createUser(document) {
         return new Promise(function(reject,resolve){
             new DAO(Models.users).create(document,(err,user)=>{
                 if(err) reject(err);
@@ -14,7 +14,6 @@ class UserService {
     }
 
     findUser(query,projections) {
-        //return DAO.findOne(query,projections);
         return new DAO(Models.users).findOne(query,projections);
     }
 

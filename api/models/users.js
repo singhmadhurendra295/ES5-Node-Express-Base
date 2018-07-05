@@ -36,6 +36,21 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
     });
 }
 
+UserSchema.pre("update", function(next) {
+    const password = this.getUpdate().$set.password;
+    if (!password) {
+        return next();
+    }
+    try {
+        const salt = bcrypt.genSaltSync();
+        const hash = bcrypt.hashSync(password, salt);
+        this.getUpdate().$set.password = hash;
+        next();
+    } catch (error) {
+        return next(error);
+    }
+});
+
 UserSchema.set('toObject')
 
 module.exports = mongoose.model('users', UserSchema);

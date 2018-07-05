@@ -15,6 +15,7 @@ const app = new Express();
 class ExpressServer {
   constructor() {
     mongoose.connect('mongodb://localhost/Factis').then(res => console.log("dn connected"));;
+    mongoose.set('debug', true);
     const root = path.normalize(`${__dirname}/..`);
     console.log(routes);
     app.set('appPath', `${root}client`);
