@@ -1,11 +1,12 @@
-const DAO = require('./dao.service');
+const DAO = require('./dao');
+const Models = require('../models');
 
 class UserService {
     constructor() {}
   
     create(document) {
         return new Promise(function(reject,resolve){
-            DAO.create(document,(err,user)=>{
+            new DAO(Models.users).create(document,(err,user)=>{
                 if(err) reject(err);
                 resolve(user);
             });
@@ -13,7 +14,12 @@ class UserService {
     }
 
     findUser(query,projections) {
-        return DAO.findOne(query,projections);
+        //return DAO.findOne(query,projections);
+        return new DAO(Models.users).findOne(query,projections);
+    }
+
+    updateUser(query,updateObj,options){
+        return new DAO(Models.users).updateOne(query,updateObj,options)
     }
   }
 

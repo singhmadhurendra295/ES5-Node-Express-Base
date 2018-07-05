@@ -1,51 +1,90 @@
-const userServices = require('../services/user.service');
+const { userServices } = require('../services/index');
 const jwtToken = require('../../lib/auth');
-const {CONSTANTS} = require('../../lib/constant');
-const {SUCCESS_MESSAGE,ERROR_MESSAGE} = require('../../lib/message');
+const { EMAIL } = require('../../lib/constant');
+const { SUCCESS_MESSAGE, ERROR_MESSAGE } = require('../../lib/message');
+const commonFunctions = require('../../lib/common');
+const emailProvider = require('../../lib/email-provider');
 
 class Controller {
 
   async create(req, res) {
-    console.log(req.body);
-    try{
-      let user = await userServices.create(req.body);
-      console.log(user);
-      res.send(user);
-    }catch(err){
-      res.send(err);
-    }
-  }
-
-  async login(req,res){
-    try{
-      let query = {email:req.body.email};
-      let projection = {firstName:1,lastName:1,email:1,password:1}
-      let user = await userServices.findUser(query,projection,{lean:true});      
-      if(user){
-        user.comparePassword(req.body.password, function(err, isMatch) {
-            if (err) throw err;
-            let {firstName,lastName,email,_id} = user;
-            let token =jwtToken.createJWToken({
-              sessionData: {firstName,lastName,email,_id},
-              maxAge: 3600
-            });
-            res.send({token:token})
-        });       
-      }else {
-        res.send({ message: ERROR_MESSAGE.INVALID_EMAIL});
+    try {
+      let payload = req.body;
+      let validateEmail = await commonFunctions.validateEmail(payload);
+      if (validateEmail) {
+        return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.EMAIL_EXIST });
       }
-    }catch(err){
-      res.send(err);
+      let user = await userServices.create(payload);
+      res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS, data: user });
+    } catch (err) {
+      res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
     }
   }
 
-  async resetPassword(req,res){
-    console.log("req.user",req.user);
-    if(req.user){
-      res.send({data:req.user});
-    }else{
-      res.send({message:"User not found."});
+  async login(req, res) {
+    try {
+      let payload = req.body;
+      let user = await commonFunctions.validateEmail(payload);
+      if (user) {
+        user.comparePassword(req.body.password, function (err, isMatch) {
+          if (err) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
+          let { firstName, lastName, email, _id } = user;
+          let token = jwtToken.createJWToken({
+            sessionData: { firstName, lastName, email, _id },
+            maxAge: 3600
+          });
+          res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS, token: token })
+        });
+      } else {
+        res.send({ status: 0, code: 404, message: ERROR_MESSAGE.INVALID_EMAIL });
+      }
+    } catch (err) {
+      res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
+    }
+  }
+
+  async resetPassword(req, res) {
+    console.log("req.user", req.user);
+    if (req.user) {
+      let payload = req.body;
+      let { _id, email } = user;
+      payload.email = email;
+      let user = await commonFunctions.validateEmail(payload);
+      user.comparePassword(payload.oldPassword,async function (err, isMatch) {
+        if (err) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
+        if(!isMatch) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.INVALID_OLD_PWD});
+        let query = { _id };
+        let updateObj = {
+          $set: {
+            password:payload.oldPassword
+          }
+        };
+        try{
+          await userServices.updateUser(query,updateObj,{new:true});
+          res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS });
+        }catch(err){
+          res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
+        }
+        
+      });
+    } else {
+      res.send({status: 0,code: 404, message:ERROR_MESSAGE.INVALID_AUTH });
+    }
+  }
+
+  async forgotPassword(req, res) {
+    try {
+      let payload = req.body;
+      let user = await commonFunctions.validateEmail(payload);
+      if (user) {
+        emailProvider.sendEmail(1, EMAIL.FORGOT_PWD.TYPE, user);
+        res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS })
+      } else {
+        res.send({ status: 0, code: 404, message: ERROR_MESSAGE.INVALID_EMAIL });
+      }
+    } catch (err) {
+      res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
     }
   }
 }
-module.exports =  new Controller();
+module.exports = new Controller();

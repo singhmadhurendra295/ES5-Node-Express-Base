@@ -9,7 +9,7 @@ class UserValidations{
             firstName: Joi.string().required(),
             lastName:Joi.string().required(),
             password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
-            email: Joi.string().email()
+            email: Joi.string().email().required()
         }); 
         Joi.validate(req.body, schema, function (err, value) {
             if(err){
@@ -24,7 +24,7 @@ class UserValidations{
         console.log("interceptor running",req.body);
         const schema = Joi.object().keys({
             password: Joi.string().required(),
-            email: Joi.string().email()
+            email: Joi.string().email().required()
         }); 
         Joi.validate(req.body, schema, function (err, value) {
             if(err){
@@ -40,6 +40,20 @@ class UserValidations{
         const schema = Joi.object().keys({
             oldPassword: Joi.string().required(),
             newPassword: Joi.string().required()
+        }); 
+        Joi.validate(req.body, schema, function (err, value) {
+            if(err){
+                res.json({err:err});
+            }else{
+                next();
+            }
+        });        
+    }
+
+    forgotPassword(req,res,next){
+        console.log("interceptor running",req.body);
+        const schema = Joi.object().keys({
+            email: Joi.string().email().required()
         }); 
         Joi.validate(req.body, schema, function (err, value) {
             if(err){

@@ -7,4 +7,5 @@ module.exports = express
   .Router()
   .post('/register',validation.create, controller.create)
   .post('/login',validation.login, controller.login)
-  .post('/resetPassword',validation.resetPassword,auth.verifyJWT_MW, controller.resetPassword);
+  .post('/resetPassword',validation.resetPassword,auth.verifyJWT_MW, controller.resetPassword)
+  .post('/forgotPassword',validation.forgotPassword,controller.forgotPassword);

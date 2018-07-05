@@ -72,6 +72,16 @@ definitions:
       newPassword:
         type: string
         example: password
+  forgotPasswordBody:
+    type: object
+    title: user
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        example: email
 
 paths:
   /users/register:
@@ -128,6 +138,8 @@ paths:
           description: Returns all examples
   /users/resetPassword:
     post:
+      security:
+        - ApiKeyAuth: []
       tags:
         - Users
       description: User Reset Passowrd      
@@ -138,6 +150,22 @@ paths:
           required: true
           schema: 
             $ref: "#/definitions/resetPasswordBody"        
+      required: true
+      responses:
+        200:
+          description: Returns all examples
+  /users/forgotPassword:
+    post:
+      tags:
+        - Users
+      description: User Forgot Passowrd      
+      parameters:
+        - name: user
+          in: body
+          description: an user forgot password
+          required: true
+          schema: 
+            $ref: "#/definitions/forgotPasswordBody"        
       required: true
       responses:
         200:

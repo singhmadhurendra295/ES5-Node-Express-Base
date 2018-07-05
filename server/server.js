@@ -30,15 +30,27 @@ class ExpressServer {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       next();
-    });
-    app.use(helmet());
-    routes(app);
+    });    
+    app.use(helmet());    
     app.use(Express.static(`${root}/public`));
+    app.use(function(err, req, res, next) {      
+      if(String(err.name) === "ValidationError"){
+        console.error(err.stack)
+      }else{
+        next(err);
+      }      
+    });
   }
 
   router(routes) {
+    routes(app);
     swaggerify(app, routes);
     return this;
+  }
+  
+  logErrors (err, req, res, next) {
+    console.error(err.stack)
+    next(err)
   }
 
   listen(port = process.env.PORT) {
