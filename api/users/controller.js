@@ -4,6 +4,7 @@ const { EMAIL } = require('../../lib/constant');
 const { SUCCESS_MESSAGE, ERROR_MESSAGE } = require('../../lib/message');
 const commonFunctions = require('../../lib/common');
 const emailProvider = require('../../lib/email-provider');
+const logger = require('../../lib/logger');
 const mongoose = require('mongoose').Types;
 const bcrypt = require('bcrypt');
 const SALT_WORK_FACTOR = 10;
@@ -37,6 +38,7 @@ class Controller {
             sessionData: { firstName, lastName, email, _id },
             maxAge: 3600
           });
+          logger.logResponse(req.id, res.statusCode, 200);
           res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS, token: token })
         });
       } else {
