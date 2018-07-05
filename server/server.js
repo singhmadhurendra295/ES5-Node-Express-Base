@@ -9,12 +9,14 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const swaggerify = require('../swagger');
 const routes = require('./routes');
+const config = require('config');
 
 const app = new Express();
 
 class ExpressServer {
   constructor() {
-    mongoose.connect('mongodb://localhost/Factis').then(res => console.log("dn connected"));;
+    console.log(config.smtpConfig);
+    mongoose.connect(config.mongoUrl).then(res => console.log("dn connected :" +config.mongoUrl));;
     mongoose.set('debug', true);
     const root = path.normalize(`${__dirname}/..`);
     console.log(routes);

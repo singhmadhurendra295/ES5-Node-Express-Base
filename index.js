@@ -2,7 +2,7 @@ require('./server/env');
 const Server = require('./server/server');
 const routes = require('./server/routes');
 
-new Server()
+new Server()  
   .router(routes)
   .listen(process.env.PORT);
 
