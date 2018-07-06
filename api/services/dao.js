@@ -5,12 +5,13 @@ class DAOServices{
         this.model = model; 
     }
 
-    create(document,cb){
-        this.model.create(document).then((user)=>{
-            cb(null,user);
-        }).catch((err) =>{
-            cb(err);
-        });
+    async createOne(document){
+        return await this.model.create(document);
+        // this.model.create(document).then((user)=>{
+        //     //cb(null,user);
+        // }).catch((err) =>{
+        //     //cb(err);
+        // });
     }
 
     findOne(query,projections){

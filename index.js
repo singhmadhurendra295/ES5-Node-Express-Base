@@ -7,6 +7,9 @@ new Server()
   .listen(process.env.PORT);
 
 process.on('uncaughtException', function (err) {
-  // handle the error safely
-  console.log(err)
-})
+  console.log("UncaughtException: ",err)
+});
+
+process.on('unhandledRejection', function(reason, p){
+  console.log("Possibly Unhandled Rejection at: Promise ", p, " reason: ", reason);
+});

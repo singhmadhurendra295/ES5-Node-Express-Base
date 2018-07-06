@@ -91,8 +91,12 @@ class Controller {
     }
   }
 
-  async updateUser(){
-
+  async fileUpload(req, res){
+    var formidable = require('formidable');
+    var form = new formidable.IncomingForm(); 
+    form.parse(req, function(err, fields, files) {
+      res.send({files: files});
+    });
   }
 
   async userDetails(){
