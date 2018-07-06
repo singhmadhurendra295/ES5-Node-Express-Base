@@ -6,10 +6,42 @@ const commonFunctions = require('../../lib/common');
 const emailProvider = require('../../lib/email-provider');
 const logger = require('../../lib/logger');
 const mongoose = require('mongoose').Types;
-const bcrypt = require('bcrypt');
-const SALT_WORK_FACTOR = 10;
 
-class Controller {
+//for reference
+//https://blog.cloudboost.io/node-express-controller-inheritance-2d5b2661ee7d 
+
+class UserController {
+  
+  constructor() {
+    this.create = this.create.bind(this);
+  }
+  create() {
+    console.log("Using parent class methos")
+  }
+}
+
+class newController extends UserController {
+  create() {
+    console.log('i have overridden parent class create method.');
+  }
+}
+const todoCtrl = new newController();
+todoCtrl.create();
+
+
+class Controller extends UserController {
+
+  constructor() {
+    super();
+  }
+
+  resSuccess() {
+
+  }
+
+  resError() {
+
+  }
 
   async create(req, res) {
     try {
@@ -30,7 +62,7 @@ class Controller {
       let payload = req.body;
       let user = await commonFunctions.validateEmail(payload);
       if (user) {
-        user.comparePassword(req.body.password,(err, isMatch)=> {
+        user.comparePassword(req.body.password, (err, isMatch) => {
           if (err) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
           if (!isMatch) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.INVALID_PWD });
           let { firstName, lastName, email, _id } = user;
@@ -60,12 +92,12 @@ class Controller {
         if (err) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
         if (!isMatch) return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.INVALID_OLD_PWD });
         try {
-          let query = { _id : mongoose.ObjectId(_id)};
+          let query = { _id: mongoose.ObjectId(_id) };
           let updateObj = {
-              $set : { password: payload.newPassword }
+            $set: { password: payload.newPassword }
           };
           let updatedUser = await userServices.updateUser(query, updateObj, { new: true });
-          res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS ,data:updatedUser });
+          res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS, data: updatedUser });
         } catch (err) {
           res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
         }
@@ -91,15 +123,15 @@ class Controller {
     }
   }
 
-  async fileUpload(req, res){
+  async fileUpload(req, res) {
     var formidable = require('formidable');
-    var form = new formidable.IncomingForm(); 
-    form.parse(req, function(err, fields, files) {
-      res.send({files: files});
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      res.send({ files: files });
     });
   }
 
-  async userDetails(){
+  async userDetails() {
 
   }
 }

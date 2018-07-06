@@ -1,5 +1,3 @@
-const Models = require('../models');
-
 class DAOServices{
     constructor(model){
         this.model = model; 
