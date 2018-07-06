@@ -6,6 +6,7 @@ const commonFunctions = require('../../lib/common');
 const emailProvider = require('../../lib/email-provider');
 const logger = require('../../lib/logger');
 const mongoose = require('mongoose').Types;
+const customError = require('../../lib/custom-error');
 
 //for reference
 //https://blog.cloudboost.io/node-express-controller-inheritance-2d5b2661ee7d 
@@ -29,35 +30,23 @@ const todoCtrl = new newController();
 todoCtrl.create();
 
 
-class Controller extends UserController {
+class Controller {
 
-  constructor() {
-    super();
-  }
-
-  resSuccess() {
-
-  }
-
-  resError() {
-
-  }
-
-  async create(req, res) {
-    try {
+  async create(req, res, next) {    
+    try {     
       let payload = req.body;
       let validateEmail = await commonFunctions.validateEmail(payload);
       if (validateEmail) {
-        return res.send({ status: 0, code: 404, message: ERROR_MESSAGE.EMAIL_EXIST });
+        return next(new customError(ERROR_MESSAGE.EMAIL_EXIST));
       }
       let user = await userServices.createUser(payload);
       res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS, data: user });
     } catch (err) {
-      res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err });
+      res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });
     }
   }
 
-  async login(req, res) {
+  async login(req, res,next) {
     try {
       let payload = req.body;
       let user = await commonFunctions.validateEmail(payload);
@@ -74,7 +63,7 @@ class Controller extends UserController {
           res.send({ status: 1, code: 200, message: SUCCESS_MESSAGE.SUCCESS, token: token })
         });
       } else {
-        res.send({ status: 0, code: 404, message: ERROR_MESSAGE.INVALID_EMAIL });
+        next(new customError(ERROR_MESSAGE.INVALID_EMAIL));
       }
     } catch (err) {
       res.send({ status: 0, code: 404, message: ERROR_MESSAGE.ERROR, data: err.stack });

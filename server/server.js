@@ -71,11 +71,7 @@ class ExpressServer {
   }
 
   errHandlerMiddleware(err, req, res, next) {
-    if (String(err.name) === "ValidationError") {
-        res.send({status:0,code:404,data:err.message}); 
-    }else{
-        res.send({status:0,code:404,data:err.message}); 
-    }
+      res.send({status:0,code:404,message:err.message,err:err});
   }
 
   listen(port = process.env.PORT) {
