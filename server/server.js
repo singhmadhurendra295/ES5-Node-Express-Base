@@ -31,7 +31,10 @@ class ExpressServer {
       resave: true,
       saveUninitialized: true
     }));
+    // initialize all routes
+    routes(app);
     //require('./passport')(app);
+    app.use(this.errHandlerMiddleware);
     app.use(function (req, res, next) {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -60,24 +63,19 @@ class ExpressServer {
       res.on('close', afterResponse);
       next();
     });
-    app.use(function (err, req, res, next) {
-      if (String(err.name) === "ValidationError") {
-        console.error(err.stack)
-      } else {
-        next(err);
-      }
-    });
   }
 
   router(routes) {
-    routes(app);
     swaggerify(app, routes);
     return this;
   }
 
-  logErrors(err, req, res, next) {
-    console.error(err.stack)
-    next(err)
+  errHandlerMiddleware(err, req, res, next) {
+    if (String(err.name) === "ValidationError") {
+        res.send({status:0,code:404,data:err.message}); 
+    }else{
+        res.send({status:0,code:404,data:err.message}); 
+    }
   }
 
   listen(port = process.env.PORT) {
