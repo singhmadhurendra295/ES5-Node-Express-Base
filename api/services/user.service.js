@@ -8,22 +8,13 @@ class UserService extends DAO{
   
     createUser(document) {
         return this.createOne(document);
-        //return new Promise(function(reject,resolve){
-            // new DAO(Models.users).create(document,(err,user)=>{
-            //     if(err) reject(err);
-            //     resolve(user);
-            // });
-            
-        //});
     }
 
     findUser(query,projections) {
-        //return new DAO(Models.users).findOne(query,projections);
         return this.findOne(query,projections);
     }
 
     updateUser(query,updateObj,options){
-        //return new DAO(Models.users).updateOne(query,updateObj,options);
         return this.updateOne(query,updateObj,options)
     }
   }
